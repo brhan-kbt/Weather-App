@@ -5,6 +5,9 @@ import fetchWeatherQuery from "../../../../../../graphql/queries/fetchWeatherQue
 import CalloutCard from "../../../../../../components/CalloutCard";
 import StatCard from "../../../../../../components/StatCard";
 import InformationPanel from "../../../../../../components/InformationPanel";
+import TempChart from "../../../../../../components/TempChart";
+import RainChart from "../../../../../../components/RainChart";
+import HumidityChart from "../../../../../../components/HumidityChart";
 
 function WeatherPage() {
   const [weatherData, setWeatherData] = useState<Root | null>(null);
@@ -30,6 +33,7 @@ function WeatherPage() {
           });
 
           setWeatherData(data.myQuery);
+          console.log(data.myQuery.hourly.time);
         } catch (error) {
           console.error("Error fetching data: ", error);
         }
@@ -117,7 +121,9 @@ function WeatherPage() {
             <hr className="my-5" />
 
             <div className="space-y-3">
-
+              <TempChart results={weatherData}/>
+              <RainChart results={weatherData}/>
+              <HumidityChart results={weatherData}/>
             </div>
 
           </div>
