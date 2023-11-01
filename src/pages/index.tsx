@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { Card,Text,Subtitle, Divider } from '@tremor/react'
+import CityPicker from '../../components/CityPicker'
 
 
 export default function Home() {
@@ -13,7 +14,7 @@ export default function Home() {
         <Subtitle className='text-xl text-center'>Powered by OpenAI, Nextjs, TailwindCSS, Tremor 2.0, + More</Subtitle>
         <Divider></Divider>
         <Card className='rounded-md bg-gradient-to-br from-[#394F68] to-[#183b7b]'>
-
+          <CityPicker/>
         </Card>
       </Card>
     </main>
