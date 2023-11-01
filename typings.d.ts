@@ -2,7 +2,7 @@ interface  CurrentWeather {
   interval: number
   is_day: number
   temperature: number
-  time: string
+  time: [string]
   weathercode: number
   winddirection: number
   windspeed: number
@@ -16,7 +16,7 @@ interface CurrentWeatherUnits {
     weathercode: string
     winddirection: string
     windspeed: string
-  }
+}
 interface Daily {
     apparent_temperature_max: [number]
     apparent_temperature_min: [number]
@@ -58,7 +58,7 @@ interface DailyUnits {
     uv_index_clear_sky: [number]
     windgusts_10m: [number]
   }
-  
+
 
   interface HourlyUnits {
     apparent_temperature: string
@@ -75,8 +75,8 @@ interface DailyUnits {
     uv_index_clear_sky: string
     windgusts_10m: string
   }
-  
-  
+
+
 interface Root {
     current_weather: CurrentWeather
     current_weather_units: CurrentWeatherUnits
@@ -92,4 +92,3 @@ interface Root {
     timezone_abbreviation: string
     utc_offset_seconds: number
   }
-  
