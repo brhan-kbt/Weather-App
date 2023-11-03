@@ -8,9 +8,13 @@ import InformationPanel from "../../../../../../components/InformationPanel";
 import TempChart from "../../../../../../components/TempChart";
 import RainChart from "../../../../../../components/RainChart";
 import HumidityChart from "../../../../../../components/HumidityChart";
+import getBasePath from "../../../../../../lib/getBasePath";
+import cleanData from "../../../../../../lib/cleanData";
 
-function WeatherPage() {
+export const revalidate = 60;
+ function WeatherPage() {
   const [weatherData, setWeatherData] = useState<Root | null>(null);
+  const [gptContent, setGptContent] = useState('');
   const router = useRouter();
   const { city, lat, long } = router.query;
 
@@ -33,7 +37,32 @@ function WeatherPage() {
           });
 
           setWeatherData(data.myQuery);
-          console.log(data.myQuery.hourly.time);
+
+          const dataToSend = cleanData(data.myQuery, city)
+          try {
+            const res = await fetch(`${getBasePath()}/api/getWeatherSummary`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                weatherData: dataToSend
+              })
+            });
+          
+            if (!res.ok) {
+              throw new Error(`Failed to fetch data. Status: ${res.status}`);
+            }
+          
+            const gptData = await res.json(); // Await the JSON conversion
+          
+            const { content } = gptData;
+            setGptContent(content);
+          } catch (error) {
+            console.error("Error fetching weather summary:", error);
+            // Handle the error, set a default content, or show an error message
+          }
+         
         } catch (error) {
           console.error("Error fetching data: ", error);
         }
@@ -42,6 +71,24 @@ function WeatherPage() {
 
     fetchData();
   }, [router.query]);
+
+ 
+  // if(weatherData){
+  //   const dataToSend = cleanData(weatherData ,city);
+
+  //   const res = await fetch(`${getBasePath()}/api/getWeatherSummary`,{
+  //     method: "POST",
+  //     headers:{
+  //       "Content-Type":"application/json",
+  //     },
+  //     body:JSON.stringify({
+  //       weatherData:dataToSend
+  //     })
+  //   })
+
+  //   const GPTdata = await res.json();
+  //   const {content}=GPTdata;
+  // }
 
   return (
     <div className="flex flex-col min-h-screen md:flex-row">
@@ -66,12 +113,11 @@ function WeatherPage() {
 
             <div className="m-2 mb-10">
               {/* Callout card */}
-              <CalloutCard
-              message="This is where summary go!"/>
-
+             <CalloutCard
+              message={gptContent}/>
             </div>
 
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 m-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 m-2">
               <StatCard
                title="Maximum Temprature"
                metric={`${weatherData.daily.temperature_2m_max[0].toFixed(1)} °`}

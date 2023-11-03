@@ -24,7 +24,7 @@ function InformationPanel({city,lat,long,results}:Props) {
 
         <div className='flex justify-between items-center'>
             <div>
-                <p className='text-xl text-white '>
+                <p className='text-medium text-white '>
                     {
                         new Date().toLocaleDateString("en-GB",{
                             weekday:'long',
